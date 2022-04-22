@@ -1,0 +1,161 @@
+
+<style>
+ .wrapper{
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+ }
+ .tasks {
+   border: 1px solid #ccc;
+   width: 100%;
+   padding: 12px;
+ }
+ .tasks .task {
+   border-bottom: 1px solid #ccc;
+ }
+ .textblocks{
+  display: flex;
+  justify-content: center;
+ }
+ .textblocks div{
+   width: 50%;
+ }
+ .textblocks div p{
+   margin-left: 22px;
+   font-weight: bold;
+ }
+ textarea {
+   display: block;
+   border-radius: 8px;
+   border: 2px solid #ccc;
+   padding: 12px;
+   margin-top: 20px;
+   width: 90%;
+   margin-left: 20px;
+ }
+ button {
+  margin-top: 20px;
+  margin-left: 10px;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  width: 182px;
+  padding: 16px 0;
+  background-color: #1546bb;
+  border: none;
+  float: left;
+ }
+ form{
+  width: auto;
+  display: inline-block;
+ }
+ .controls{
+   display: flex;
+   justify-content: center;
+ }
+ .controls .info{
+   width: 30%;
+   padding-left: 22px;
+ }
+ .controls .buttons{
+   width: 70%;
+ }
+</style>
+
+
+<style>
+table.GeneratedTable {
+  width: 100%;
+  background-color: #ffffff;
+  border-collapse: collapse;
+  border-width: 2px;
+  border-color: #1400ff;
+  border-style: solid;
+  color: #000000;
+}
+
+table.GeneratedTable td, table.GeneratedTable th {
+  border-width: 2px;
+  border-color: #1400ff;
+  border-style: solid;
+  padding: 3px;
+}
+
+table.GeneratedTable thead {
+  background-color: #0900ff;
+}
+</style>
+<div class="controls">
+ <div class="info">
+  <p class="count_parsed">Всего спарсили деталей за эту сессию: <strong>{{ count }}</strong></p>
+  <p class="count_bd">Всего деталей в БД: <strong>{{ count_bd }}</strong></p>
+ </div>
+ <div class="buttons">
+  <form action="{% url 'run' %}" method="get">
+
+   <button type="submit" name='start' value={{start_parse}}>Запустить парсинг</button>
+  </form>
+  <form action="{% url 'stop' %}" method="get">
+
+   <button type="submit" name='stop' value={{stop_parse}}>Остановить парсинг</button>
+  </form>
+ </div>
+</div>
+
+{% if tasks %}
+
+ <table class="GeneratedTable">
+  <thead>
+    <tr>
+      <th>Логин</th>
+      <th>Пароль</th>
+      <th>Useragent</th>
+      <th>Прокси</th>
+      <th>ID процесса</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for task in tasks %}
+    <tr
+        {% if task.sucsess %} style="background-color: #7CFC00;" {% endif %}
+        {% if task.ban %} style="background-color: #FF0000;" {% endif %}
+    >
+      <td>{{ task.user }}</td>
+      <td>{{ task.password }}</td>
+      <td>{{ task.useragent }}</td>
+      <td>{{ task.proxy }}</td>
+      <td>{{ task.pid }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+<div class="textblocks">
+ <div class="parsed_skus">
+  <p>Спарсили:</p>
+  <textarea name="details" id="Parsed_details" cols="30" rows="10">
+     {% for detail in details %}
+      {{ detail.part_result }} - {{ detail.title }} добавлена {{ detail.datetime }}
+     {% endfor %}
+  </textarea>
+ </div>
+ <div class="unparsed_skus">
+  <p>Не удалось спарсить:</p>
+  <textarea name="unparsed_skus" id="Unparsed_details" cols="30" rows="10">
+     {% for detail in unparsed_skus %}
+      {{ detail.login }} : {{ detail.value }}
+     {% endfor %}
+  </textarea>
+ </div>
+</div>
+
+<script>
+ setTimeout(function(){
+   window.location.href = '{{ host }}';
+  }, 5000);
+</script>
+
